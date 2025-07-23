@@ -58,6 +58,31 @@ echo "WG_DEFAULT_ADDRESS=$WG_DEFAULT_ADDRESS" >> ./.env
 
 docker run --rm ghcr.io/wg-easy/wg-easy wgpw "$WG_UI_PASSWORD" >> ./.env
 
+[ -f docker-compose.yml ] && rm docker-compose.yml
+
+cat <<EOF > docker-compose.yml
+volumes:
+  etc_wireguard:
+
+services:
+  wg-easy:
+    env_file: ./.env
+    image: ghcr.io/wg-easy/wg-easy:nightly
+    container_name: wg-easy
+    volumes:
+      - etc_wireguard:/etc/wireguard
+    ports:
+      - "\${WG_PORT}:\${WG_PORT}/udp"
+      - "\${PORT}:\${PORT}/tcp"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      # - NET_RAW # ⚠️ Uncomment if using Podman 
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+EOF
 
 docker compose up -d --build
 

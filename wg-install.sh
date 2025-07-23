@@ -44,11 +44,12 @@ read -rp "Password: " -e -i "foobar12345#" WG_UI_PASSWORD
 read -rp "Default DNS: " -e -i "208.67.222.2, 208.67.220.2" WG_DEFAULT_DNS
 read -rp "Default address: " -e -i "10.14.13.x" WG_DEFAULT_ADDRESS
 
-sed -i 's:^WG_HOST=.*:WG_HOST='$WG_HOST':' ./.env
+sed -i 's:^WG_HOST=.*:WG_HOST='${WG_HOST}':' ./.env
 
-sed -i 's:^WG_PORT=.*:WG_PORT='$WG_PORT':' ./.env
-sed -i 's:^WG_CONFIG_PORT=.*:WG_PORT='$WG_PORT':' ./.env
-sed -i 's:^PORT=.*:WG_UI_PORT='$WG_UI_PORT':' ./.env
+sed -i 's:^WG_PORT=.*:WG_PORT='${WG_PORT}':' ./.env
+sed -i 's:^WG_CONFIG_PORT=.*:WG_CONFIG_PORT='${WG_PORT}':' ./.env
+sed -i 's:^PORT=.*:PORT='${WG_UI_PORT}':' ./.env
+
 
 sed -i '/WG_DEFAULT_DNS/d' ./.env
 echo "WG_DEFAULT_DNS=$WG_DEFAULT_DNS" >> ./.env
